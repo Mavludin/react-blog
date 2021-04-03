@@ -8,6 +8,24 @@ export class BlogContent extends Component {
   state = {
     showAddForm: false,
     blogArr: [],
+    isPending: false
+  };
+
+  fetchPosts = () => {
+    this.setState({
+      isPending: true
+    })
+    axios
+      .get("https://5fb3db44b6601200168f7fba.mockapi.io/api/posts")
+      .then((response) => {
+        this.setState({
+          blogArr: response.data,
+          isPending: false
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   likePost = (pos) => {
@@ -21,16 +39,19 @@ export class BlogContent extends Component {
     localStorage.setItem("blogPosts", JSON.stringify(temp));
   };
 
-  deletePost = (pos) => {
-    if (window.confirm(`Удалить ${this.state.blogArr[pos].title}?`)) {
-      const temp = [...this.state.blogArr];
-      temp.splice(pos, 1);
-
-      this.setState({
-        blogArr: temp,
-      });
-
-      localStorage.setItem("blogPosts", JSON.stringify(temp));
+  deletePost = (blogPost) => {
+    if (window.confirm(`Удалить ${blogPost.title}?`)) {
+      axios
+        .delete(
+          `https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/${blogPost.id}`
+        )
+        .then((response) => {
+          console.log("Пост удален => ", response.data);
+          this.fetchPosts();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -56,23 +77,15 @@ export class BlogContent extends Component {
     this.setState((state) => {
       const posts = [...state.blogArr];
       posts.push(blogPost);
-      localStorage.setItem('blogPosts', JSON.stringify(posts))
+      localStorage.setItem("blogPosts", JSON.stringify(posts));
       return {
-        blogArr: posts
-      }
-    })
-  }
+        blogArr: posts,
+      };
+    });
+  };
 
   componentDidMount() {
-    axios.get('https://5fb3db44b6601200168f7fba.mockapi.io/api/posts')
-      .then((response) => {
-        this.setState({
-          blogArr: response.data
-        })
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    this.fetchPosts();
     window.addEventListener("keyup", this.handleEscape);
   }
 
@@ -89,13 +102,12 @@ export class BlogContent extends Component {
           description={item.description}
           liked={item.liked}
           likePost={() => this.likePost(pos)}
-          deletePost={() => this.deletePost(pos)}
+          deletePost={() => this.deletePost(item)}
         />
       );
     });
 
-    if (this.state.blogArr.length === 0)
-      return <h1>Загружаю данные...</h1>
+    if (this.state.blogArr.length === 0) return <h1>Загружаю данные...</h1>;
 
     return (
       <div className="blogPage">
@@ -114,6 +126,9 @@ export class BlogContent extends Component {
               Создать новый пост
             </button>
           </div>
+          {
+            this.state.isPending && <h2>Подождите...</h2>
+          }
           <div className="posts">{blogPosts}</div>
         </>
       </div>
