@@ -3,29 +3,53 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { Component } from "react";
 
 export class AddPostForm extends Component {
+  state = {
+    postTitle: "",
+    postDesc: "",
+  };
 
-    state = {
-        postTitle: '',
-        postDesc: ''
+  handlePostTitleChange = (e) => {
+    this.setState({
+      postTitle: e.target.value,
+    });
+  };
+
+  handlePostDescChange = (e) => {
+    this.setState({
+      postDesc: e.target.value,
+    });
+  };
+
+  createPost = (e) => {
+    e.preventDefault()
+    const post = {
+      id: this.props.blogArr.length + 1,
+      title: this.state.postTitle,
+      description: this.state.postDesc,
+      liked: false,
     }
 
-    handlePostTitleChange = e => {
-        this.setState({
-            postTitle: e.target.value
-        })
-    }
+    this.props.addNewBlogPost(post);
+    this.props.handleAddFormHide()
+  }
 
-    handlePostDescChange = e => {
-        this.setState({
-            postDesc: e.target.value
-        })
-    }
+  // componentDidMount() {
+  //   console.log('Компонент формы отрисовался')
+  // }
+
+  // componentDidUpdate() {
+  //   console.log('Компонент формы обновился')
+  // }
+
+  // componentWillUnmount() {
+  //   console.log('Компонент формы удалился')
+  // }
 
   render() {
     const handleAddFormHide = this.props.handleAddFormHide;
     return (
       <>
-        <form action="" className="addPostForm">
+        <form className="addPostForm" onSubmit={this.createPost}>
           <button className="hideBtn" onClick={handleAddFormHide}>
             <CancelIcon />
           </button>
@@ -38,6 +62,7 @@ export class AddPostForm extends Component {
               placeholder="Заголовок поста"
               value={this.state.postTitle}
               onChange={this.handlePostTitleChange}
+              required
             />
           </div>
           <div>
@@ -47,13 +72,13 @@ export class AddPostForm extends Component {
               placeholder="Описание поста"
               value={this.state.postDescription}
               onChange={this.handlePostDescChange}
+              required
             />
           </div>
           <div>
             <button
-              onClick={handleAddFormHide}
               className="blackBtn"
-              type="button"
+              type="submit"
             >
               Добавить пост
             </button>

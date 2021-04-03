@@ -16,7 +16,8 @@
 .hideBtn {
     position: absolute;
     top: 4px;
-    right: 0;
+    right: 4px;
+    cursor: pointer;
 }
 
 .addPostForm div + div {
