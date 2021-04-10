@@ -4,12 +4,15 @@ import "./BlogContent.css";
 import { AddPostForm } from "./components/AddPostForm";
 import { BlogCard } from "./components/BlogCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { EditPostForm } from "./components/EditPostForm";
 
 export class BlogContent extends Component {
   state = {
     showAddForm: false,
+    showEditForm: false,
     blogArr: [],
     isPending: false,
+    selectedPost: {}
   };
 
   fetchPosts = () => {
@@ -78,6 +81,21 @@ export class BlogContent extends Component {
       });
   };
 
+  editBlogPost = (updatedBlogPost) => {
+    this.setState({
+      isPending: true,
+    });
+    axios.put(`https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/${updatedBlogPost.id}`, updatedBlogPost)
+    .then((response) => {
+      console.log("Пост отредактирован =>", response.data);
+      this.fetchPosts();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  }
+
   handleAddFormShow = () => {
     this.setState({
       showAddForm: true,
@@ -90,22 +108,30 @@ export class BlogContent extends Component {
     });
   };
 
-  handleEscape = (e) => {
-    if (e.key === "Escape" && this.state.showAddForm) {
-      this.handleAddFormHide();
-    }
+  handleEditFormShow = () => {
+    this.setState({
+      showEditForm: true,
+    });
   };
+
+  handleEditFormHide = () => {
+    this.setState({
+      showEditForm: false,
+    });
+  };
+
+  handleSelectPost = (blogPost) => {
+    this.setState({
+      selectedPost: blogPost
+    })
+  }
 
   componentDidMount() {
     this.fetchPosts();
-    window.addEventListener("keyup", this.handleEscape);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.handleEscape);
   }
 
   render() {
+    console.log(this.state.selectedPost)
     const blogPosts = this.state.blogArr.map((item) => {
       return (
         <BlogCard
@@ -115,6 +141,8 @@ export class BlogContent extends Component {
           liked={item.liked}
           likePost={() => this.likePost(item)}
           deletePost={() => this.deletePost(item)}
+          handleEditFormShow={this.handleEditFormShow}
+          handleSelectPost={()=>this.handleSelectPost(item)}
         />
       );
     });
@@ -132,6 +160,16 @@ export class BlogContent extends Component {
             handleAddFormHide={this.handleAddFormHide}
           />
         )}
+
+        {
+          this.state.showEditForm && (
+            <EditPostForm
+              handleEditFormHide={this.handleEditFormHide}
+              selectedPost={this.state.selectedPost}
+              editBlogPost={this.editBlogPost}
+            />
+          )
+        }
 
         <>
           <h1>Блог</h1>
