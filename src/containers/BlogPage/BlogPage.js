@@ -1,12 +1,15 @@
 import axios from "axios";
 import { Component } from "react";
-import "./BlogContent.css";
+import "./BlogPage.css";
 import { AddPostForm } from "./components/AddPostForm";
 import { BlogCard } from "./components/BlogCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { EditPostForm } from "./components/EditPostForm";
+import { postsUrl } from "../../shared/projectData";
 
-export class BlogContent extends Component {
+let source;
+
+export class BlogPage extends Component {
   state = {
     showAddForm: false,
     showEditForm: false,
@@ -16,8 +19,9 @@ export class BlogContent extends Component {
   };
 
   fetchPosts = () => {
+    source = axios.CancelToken.source();
     axios
-      .get("https://5fb3db44b6601200168f7fba.mockapi.io/api/posts")
+      .get(postsUrl, { cancelToken: source.token })
       .then((response) => {
         this.setState({
           blogArr: response.data,
@@ -29,13 +33,23 @@ export class BlogContent extends Component {
       });
   };
 
+  componentDidMount() {
+    this.fetchPosts();
+  }
+
+  componentWillUnmount() {
+    if (source) {
+      source.cancel('Axios get canceled')
+    }
+  }
+
   likePost = (blogPost) => {
     const temp = { ...blogPost };
     temp.liked = !temp.liked;
 
     axios
       .put(
-        `https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/${blogPost.id}`,
+        `${postsUrl}${blogPost.id}`,
         temp
       )
       .then((response) => {
@@ -54,7 +68,7 @@ export class BlogContent extends Component {
       });
       axios
         .delete(
-          `https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/${blogPost.id}`
+          `${postsUrl}${blogPost.id}`
         )
         .then((response) => {
           console.log("Пост удален => ", response.data);
@@ -71,7 +85,7 @@ export class BlogContent extends Component {
       isPending: true,
     });
     axios
-      .post("https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/", blogPost)
+      .post(postsUrl, blogPost)
       .then((response) => {
         console.log("Пост создан =>", response.data);
         this.fetchPosts();
@@ -85,7 +99,7 @@ export class BlogContent extends Component {
     this.setState({
       isPending: true,
     });
-    axios.put(`https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/${updatedBlogPost.id}`, updatedBlogPost)
+    axios.put(`${postsUrl}${updatedBlogPost.id}`, updatedBlogPost)
     .then((response) => {
       console.log("Пост отредактирован =>", response.data);
       this.fetchPosts();
@@ -126,12 +140,7 @@ export class BlogContent extends Component {
     })
   }
 
-  componentDidMount() {
-    this.fetchPosts();
-  }
-
   render() {
-    console.log(this.state.selectedPost)
     const blogPosts = this.state.blogArr.map((item) => {
       return (
         <BlogCard

@@ -38,3 +38,15 @@ main {
 h1 {
   text-align: center;
 }
+
+.blackBtn {
+  padding: 5px 15px;
+  border-radius: 16px;
+  background-color: black;
+  color: white;
+  transition: .2s;
+}
+
+.blackBtn:hover {
+  background-color: rgba(1, 1, 1, 0.8)
+}

@@ -13,3 +13,7 @@ footer span {
   font-size: 18px;
   color: white;
 }
+
+.btn {
+  background-color: crimson;
+}
