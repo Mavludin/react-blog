@@ -1,0 +1,18 @@
+.post {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.postControl {
+    display: flex;
+    align-items: center;
+}
+
+.postControl button {
+    padding: 0;
+}
+
+.deleteBtn svg {
+    font-size: 32px;
+}
