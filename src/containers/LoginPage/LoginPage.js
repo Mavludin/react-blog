@@ -29,7 +29,6 @@ export const LoginPage = ({
     history.push('/');
   }
 
-
   return (
     <h1>
       <form className="loginForm" onSubmit={handleLogIn}>
@@ -40,6 +39,7 @@ export const LoginPage = ({
             type="text"
             placeholder="Логин"
             onChange={handleLoginChange}
+            value={login}
             required
           />
         </div>
@@ -49,6 +49,7 @@ export const LoginPage = ({
             type="password"
             placeholder="Пароль"
             onChange={handlePasswordChange}
+            value={password}
             required
           />
         </div>

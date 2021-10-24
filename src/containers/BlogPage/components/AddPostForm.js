@@ -1,93 +1,81 @@
 import "./AddPostForm.css";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { Component } from "react";
+import { useState } from "react";
 
-export class AddPostForm extends Component {
-  state = {
-    postTitle: "",
-    postDesc: "",
+export const AddPostForm = ({ addNewBlogPost, handleAddFormHide }) => {
+  const [postTitle, setPostTitle] = useState("");
+  const [postDesc, setPostDesc] = useState("");
+
+  const handlePostTitleChange = (e) => {
+    setPostTitle(e.target.value);
   };
 
-  handlePostTitleChange = (e) => {
-    this.setState({
-      postTitle: e.target.value,
-    });
+  const handlePostDescChange = (e) => {
+    setPostDesc(e.target.value);
   };
 
-  handlePostDescChange = (e) => {
-    this.setState({
-      postDesc: e.target.value,
-    });
-  };
-
-  createPost = (e) => {
-    e.preventDefault()
+  const createPost = (e) => {
+    e.preventDefault();
     const post = {
-      title: this.state.postTitle,
-      description: this.state.postDesc,
+      title: postTitle,
+      description: postDesc,
       liked: false,
-    }
+    };
 
-    this.props.addNewBlogPost(post);
-    this.props.handleAddFormHide()
-  }
-
-  handleEscape = (e) => {
-    if (e.key === "Escape") {
-      this.props.handleAddFormHide();
-    }
+    addNewBlogPost(post);
+    handleAddFormHide();
   };
 
-  componentDidMount() {
-    window.addEventListener('keyup', this.handleEscape)
-  }
+  useState(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        handleAddFormHide();
+      }
+    };
 
-  componentWillUnmount() {
-    window.removeEventListener('keyup', this.handleEscape)
-  }
+    window.addEventListener("keyup", handleEscape);
 
-  render() {
-    const handleAddFormHide = this.props.handleAddFormHide;
-    return (
-      <>
-        <form className="addPostForm" onSubmit={this.createPost}>
-          <button className="hideBtn" onClick={handleAddFormHide}>
-            <CancelIcon />
+    return () => {
+      window.removeEventListener("keyup", handleEscape);
+    };
+  }, []);
+
+  return (
+    <>
+      <form className="addPostForm" onSubmit={createPost}>
+        <button className="hideBtn" onClick={handleAddFormHide}>
+          <CancelIcon />
+        </button>
+        <h2>Создание поста</h2>
+        <div>
+          <input
+            className="addFormInput"
+            type="text"
+            name="postTitle"
+            placeholder="Заголовок поста"
+            value={postTitle}
+            onChange={handlePostTitleChange}
+            required
+          />
+        </div>
+        <div>
+          <textarea
+            className="addFormInput"
+            name="postDescription"
+            placeholder="Описание поста"
+            value={postDesc}
+            onChange={handlePostDescChange}
+            rows={8}
+            required
+          />
+        </div>
+        <div>
+          <button className="blackBtn" type="submit">
+            Добавить пост
           </button>
-          <h2>Создание поста</h2>
-          <div>
-            <input
-              className="addFormInput"
-              type="text"
-              name="postTitle"
-              placeholder="Заголовок поста"
-              value={this.state.postTitle}
-              onChange={this.handlePostTitleChange}
-              required
-            />
-          </div>
-          <div>
-            <textarea
-              className="addFormInput"
-              name="postDescription"
-              placeholder="Описание поста"
-              value={this.state.postDesc}
-              onChange={this.handlePostDescChange}
-              rows={8}
-              required
-            />
-          </div>
-          <div>
-            <button
-              className="blackBtn"
-              type="submit"
-            >
-              Добавить пост
-            </button>
-          </div>
-        </form>
-        <div onClick={handleAddFormHide} className="overlay"></div>
-      </>
-    );
-  }
-}
+        </div>
+      </form>
+      <div onClick={handleAddFormHide} className="overlay"></div>
+    </>
+  );
+};
