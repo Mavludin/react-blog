@@ -8,8 +8,11 @@ import {
 import "./App.css";
 import { Footer } from "./components/Footer/Footer";
 import { Header } from "./components/Header/Header";
+import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
+import { PublicRoute } from "./components/PublicRoute/PublicRoute";
 import { BlogPage } from "./containers/BlogPage/BlogPage";
 import { LoginPage } from "./containers/LoginPage/LoginPage";
+import { NoMatch } from "./containers/NoMatch/NoMatch";
 
 export function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -37,27 +40,20 @@ export function App() {
               }}
             />
 
-            <Route
-              exact
-              path="/login"
-              render={(props) => (
-                !isLoggedIn ?
-                <LoginPage
-                  {...props}
-                  setIsLoggedIn={setIsLoggedIn}
-                  setUserName={setUserName}
-                /> : <Redirect to="/blog" />
-              )}
-            />
+            <PublicRoute isLoggedIn={isLoggedIn} path="/login">
+              <LoginPage
+                setIsLoggedIn={setIsLoggedIn}
+                setUserName={setUserName}
+              />
+            </PublicRoute>
 
-            <Route
-              exact
-              path="/blog"
-              render={(props) => {
-                if (isLoggedIn) return <BlogPage {...props} />
-                return <Redirect to="/login" />
-              }}
-            />
+            <PrivateRoute isLoggedIn={isLoggedIn} path="/blog">
+              <BlogPage />
+            </PrivateRoute>
+
+            <Route path="*">
+              <NoMatch />
+            </Route>
           </Switch>
         </main>
 

@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { useHistory } from "react-router";
 import "./LoginPage.css";
 
 export const LoginPage = ({
   setIsLoggedIn,
-  history,
   setUserName
 }) => {
+
+  const history = useHistory()
 
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
