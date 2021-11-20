@@ -19,6 +19,7 @@ export function App() {
     localStorage.getItem("isLoggedIn") === "true"
   );
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem("userName") === "admin" || false);
 
   return (
     <Router>
@@ -45,11 +46,12 @@ export function App() {
               <LoginPage
                 setIsLoggedIn={setIsLoggedIn}
                 setUserName={setUserName}
+                setIsAdmin={setIsAdmin}
               />
             </PublicRoute>
 
             <PrivateRoute isLoggedIn={isLoggedIn} path="/blog">
-              <BlogPage />
+              <BlogPage isAdmin={isAdmin} />
             </PrivateRoute>
 
             <Route exact path="/404">

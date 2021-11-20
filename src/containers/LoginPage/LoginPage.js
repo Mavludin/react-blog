@@ -4,7 +4,8 @@ import "./LoginPage.css";
 
 export const LoginPage = ({
   setIsLoggedIn,
-  setUserName
+  setUserName,
+  setIsAdmin
 }) => {
 
   const history = useHistory()
@@ -26,9 +27,14 @@ export const LoginPage = ({
     localStorage.setItem('isLoggedIn', true);
     localStorage.setItem('userName', login)
 
+    if (login === 'admin' && password === '123456') {
+      setIsAdmin(true);
+    }
+
     setUserName(login);
     setIsLoggedIn(true);
     history.push('/');
+
   }
 
   return (

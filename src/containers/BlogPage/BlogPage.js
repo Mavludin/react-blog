@@ -1,15 +1,15 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import "./BlogPage.css";
-import { AddPostForm } from "./components/AddPostForm";
-import { BlogCard } from "./components/BlogCard";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { EditPostForm } from "./components/EditPostForm";
-import { postsUrl } from "../../shared/projectData";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import './BlogPage.css';
+import { AddPostForm } from './components/AddPostForm';
+import { BlogCard } from './components/BlogCard';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { EditPostForm } from './components/EditPostForm';
+import { postsUrl } from '../../shared/projectData';
 
 let source;
 
-export const BlogPage = () => {
+export const BlogPage = ({ isAdmin }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [blogArr, setBlogArr] = useState([]);
@@ -33,7 +33,7 @@ export const BlogPage = () => {
     fetchPosts();
     return () => {
       if (source) {
-        source.cancel("Axios get canceled");
+        source.cancel('Axios get canceled');
       }
     };
   }, []);
@@ -45,7 +45,7 @@ export const BlogPage = () => {
     axios
       .put(`${postsUrl}${blogPost.id}`, temp)
       .then((response) => {
-        console.log("Пост изменен => ", response.data);
+        console.log('Пост изменен => ', response.data);
         fetchPosts();
       })
       .catch((err) => {
@@ -59,7 +59,7 @@ export const BlogPage = () => {
       axios
         .delete(`${postsUrl}${blogPost.id}`)
         .then((response) => {
-          console.log("Пост удален => ", response.data);
+          console.log('Пост удален => ', response.data);
           fetchPosts();
         })
         .catch((err) => {
@@ -73,7 +73,7 @@ export const BlogPage = () => {
     axios
       .post(postsUrl, blogPost)
       .then((response) => {
-        console.log("Пост создан =>", response.data);
+        console.log('Пост создан =>', response.data);
         fetchPosts();
       })
       .catch((err) => {
@@ -86,7 +86,7 @@ export const BlogPage = () => {
     axios
       .put(`${postsUrl}${updatedBlogPost.id}`, updatedBlogPost)
       .then((response) => {
-        console.log("Пост отредактирован =>", response.data);
+        console.log('Пост отредактирован =>', response.data);
         fetchPosts();
       })
       .catch((err) => {
@@ -125,6 +125,7 @@ export const BlogPage = () => {
         deletePost={() => deletePost(item)}
         handleEditFormShow={handleEditFormShow}
         handleSelectPost={() => handleSelectPost(item)}
+        isAdmin={isAdmin}
       />
     );
   });
@@ -134,7 +135,7 @@ export const BlogPage = () => {
   const postsOpactiy = isPending ? 0.5 : 1;
 
   return (
-    <div className="blogPage">
+    <div className='blogPage'>
       {showAddForm && (
         <AddPostForm
           blogArr={blogArr}
@@ -153,16 +154,19 @@ export const BlogPage = () => {
 
       <>
         <h1>Блог</h1>
-        <div className="addNewPost">
-          <button className="blackBtn" onClick={handleAddFormShow}>
-            Создать новый пост
-          </button>
-        </div>
 
-        <div className="posts" style={{ opacity: postsOpactiy }}>
+        {isAdmin && (
+          <div className='addNewPost'>
+            <button className='blackBtn' onClick={handleAddFormShow}>
+              Создать новый пост
+            </button>
+          </div>
+        )}
+
+        <div className='posts' style={{ opacity: postsOpactiy }}>
           {blogPosts}
         </div>
-        {isPending && <CircularProgress className="preloader" />}
+        {isPending && <CircularProgress className='preloader' />}
       </>
     </div>
   );

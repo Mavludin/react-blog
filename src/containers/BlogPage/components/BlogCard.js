@@ -10,35 +10,37 @@ export const BlogCard = ({
   likePost,
   deletePost,
   handleEditFormShow,
-  handleSelectPost
+  handleSelectPost,
+  isAdmin,
 }) => {
-
   const showEditForm = () => {
     handleSelectPost();
     handleEditFormShow();
-  }
+  };
 
-  const heartFill = liked ? 'crimson' : 'black'
+  const heartFill = liked ? 'crimson' : 'black';
 
   return (
-    <div className="post">
-      <div className="postContent">
+    <div className='post'>
+      <div className='postContent'>
         <h2>{title}</h2>
         <p>{description}</p>
         <div>
           <button onClick={likePost}>
-            <FavoriteIcon style={{fill: heartFill}} />
+            <FavoriteIcon style={{ fill: heartFill }} />
           </button>
         </div>
       </div>
-      <div className="postControl">
-        <button className="editBtn" onClick={showEditForm}>
-          <EditIcon />
-        </button>
-        <button className="deleteBtn" onClick={deletePost}>
-          <DeleteForeverIcon />
-        </button>
-      </div>
+      {isAdmin && (
+        <div className='postControl'>
+          <button className='editBtn' onClick={showEditForm}>
+            <EditIcon />
+          </button>
+          <button className='deleteBtn' onClick={deletePost}>
+            <DeleteForeverIcon />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

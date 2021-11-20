@@ -4,7 +4,8 @@ import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
 export const Header = ({ isLoggedIn, setIsLoggedIn, userName }) => {
   const handleLogOut = () => {
-    localStorage.setItem('isLoggedIn', false)
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('userName')
     setIsLoggedIn(false);
   };
 
