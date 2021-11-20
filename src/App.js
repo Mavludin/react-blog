@@ -31,6 +31,7 @@ export function App() {
 
         <main>
           <Switch>
+
             <Route
               exact
               path="/"
@@ -51,9 +52,19 @@ export function App() {
               <BlogPage />
             </PrivateRoute>
 
-            <Route path="*">
+            <Route exact path="/404">
               <NoMatch />
             </Route>
+
+            <Route path="*"
+              render={({ location }) => {
+                return <Redirect to={{
+                  pathname: '/404',
+                  from: location
+                }} />
+              }}
+            />
+
           </Switch>
         </main>
 
