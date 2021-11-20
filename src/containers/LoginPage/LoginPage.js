@@ -24,12 +24,16 @@ export const LoginPage = ({
   const handleLogIn = (e) => {
     e.preventDefault();
 
-    localStorage.setItem('isLoggedIn', true);
-    localStorage.setItem('userName', login)
-
-    if (login === 'admin' && password === '123456') {
-      setIsAdmin(true);
+    if (login === 'admin') {
+      if (password === '123456') setIsAdmin(true);
+      else {
+        alert('Введите правильный логин или пароль!');
+        return false
+      }
     }
+
+    localStorage.setItem('isLoggedIn', true);
+    localStorage.setItem('userName', login);
 
     setUserName(login);
     setIsLoggedIn(true);

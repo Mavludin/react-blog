@@ -19,7 +19,7 @@ export function App() {
     localStorage.getItem("isLoggedIn") === "true"
   );
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
-  const [isAdmin, setIsAdmin] = useState(localStorage.getItem("userName") === "admin" || false);
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem("userName") === "admin");
 
   return (
     <Router>
@@ -28,6 +28,7 @@ export function App() {
           userName={userName}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
+          setIsAdmin={setIsAdmin}
         />
 
         <main>
