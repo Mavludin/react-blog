@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './BlogPage.css';
 import { AddPostForm } from './components/AddPostForm';
 import { BlogCard } from './components/BlogCard';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { EditPostForm } from './components/EditPostForm';
 import { postsUrl } from '../../shared/projectData';
+import { Link } from 'react-router-dom';
 
 let source;
 
@@ -116,17 +117,19 @@ export const BlogPage = ({ isAdmin }) => {
 
   const blogPosts = blogArr.map((item) => {
     return (
-      <BlogCard
-        key={item.id}
-        title={item.title}
-        description={item.description}
-        liked={item.liked}
-        likePost={() => likePost(item)}
-        deletePost={() => deletePost(item)}
-        handleEditFormShow={handleEditFormShow}
-        handleSelectPost={() => handleSelectPost(item)}
-        isAdmin={isAdmin}
-      />
+      <React.Fragment key={item.id}>
+        <BlogCard
+          title={item.title}
+          description={item.description}
+          liked={item.liked}
+          likePost={() => likePost(item)}
+          deletePost={() => deletePost(item)}
+          handleEditFormShow={handleEditFormShow}
+          handleSelectPost={() => handleSelectPost(item)}
+          isAdmin={isAdmin}
+        />
+        <Link to={`/blog/${item.id}`}>Подробнее</Link>
+      </React.Fragment>
     );
   });
 

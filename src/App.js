@@ -11,6 +11,8 @@ import { Header } from "./components/Header/Header";
 import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
 import { PublicRoute } from "./components/PublicRoute/PublicRoute";
 import { BlogPage } from "./containers/BlogPage/BlogPage";
+import { BlogCard } from "./containers/BlogPage/components/BlogCard";
+import { BlogCardPage } from "./containers/BlogPage/components/BlogCardPage";
 import { LoginPage } from "./containers/LoginPage/LoginPage";
 import { NoMatch } from "./containers/NoMatch/NoMatch";
 
@@ -43,7 +45,7 @@ export function App() {
               }}
             />
 
-            <PublicRoute isLoggedIn={isLoggedIn} path="/login">
+            <PublicRoute isLoggedIn={isLoggedIn} path="/login" exact>
               <LoginPage
                 setIsLoggedIn={setIsLoggedIn}
                 setUserName={setUserName}
@@ -51,7 +53,11 @@ export function App() {
               />
             </PublicRoute>
 
-            <PrivateRoute isLoggedIn={isLoggedIn} path="/blog">
+            <PrivateRoute isLoggedIn={isLoggedIn} path="/blog/:postId" exact>
+              <BlogCardPage isAdmin={isAdmin} />
+            </PrivateRoute>
+
+            <PrivateRoute isLoggedIn={isLoggedIn} path="/blog" exact>
               <BlogPage isAdmin={isAdmin} />
             </PrivateRoute>
 
