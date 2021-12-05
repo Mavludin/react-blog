@@ -2,7 +2,7 @@
     position: relative;
 }
 
-.blogPage .preloader {
+.preloader {
     position: absolute;
     left: 50%;
     top: 50%;
