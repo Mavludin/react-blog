@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './BlogPage.css';
 import { AddPostForm } from './components/AddPostForm';
 import { BlogCard } from './components/BlogCard';
@@ -7,6 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { EditPostForm } from './components/EditPostForm';
 import { postsUrl } from '../../shared/projectData';
 import { Link } from 'react-router-dom';
+import { useGetPosts } from '../../shared/queries';
 
 let source;
 
@@ -16,6 +17,12 @@ export const BlogPage = ({ isAdmin }) => {
   const [blogArr, setBlogArr] = useState([]);
   const [isPending, setIsPending] = useState(false);
   const [selectedPost, setSelectedPost] = useState({});
+
+  const { data: posts, isLoading, isError, error, isFetching } = useGetPosts();
+
+  if (isLoading) return <h1>Загружаю данные...</h1>;
+
+  if (isError) return <h1>{error.message}</h1>;
 
   const fetchPosts = () => {
     source = axios.CancelToken.source();
@@ -29,15 +36,6 @@ export const BlogPage = ({ isAdmin }) => {
         console.log(err);
       });
   };
-
-  useEffect(() => {
-    fetchPosts();
-    return () => {
-      if (source) {
-        source.cancel('Axios get canceled');
-      }
-    };
-  }, []);
 
   const likePost = (blogPost) => {
     const temp = { ...blogPost };
@@ -115,7 +113,7 @@ export const BlogPage = ({ isAdmin }) => {
     setSelectedPost(blogPost);
   };
 
-  const blogPosts = blogArr.map((item) => {
+  const blogPosts = posts.map((item) => {
     return (
       <React.Fragment key={item.id}>
         <BlogCard
@@ -133,9 +131,7 @@ export const BlogPage = ({ isAdmin }) => {
     );
   });
 
-  if (blogArr.length === 0) return <h1>Загружаю данные...</h1>;
-
-  const postsOpactiy = isPending ? 0.5 : 1;
+  const postsOpactiy = isFetching ? 0.5 : 1;
 
   return (
     <div className='blogPage'>
