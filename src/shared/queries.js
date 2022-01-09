@@ -61,3 +61,15 @@ export const useAddPost = () => {
     }
   )
 }
+
+export const useGetSinglePost = (postId) => {
+  return useQuery(['posts', postId], () => {
+    return axios.get(postsUrl + postId)
+      .then(res => res.data)
+      .catch(err => {
+        throw new Error(err)
+      })
+  }, {
+    refetchOnWindowFocus: false,
+  })
+}

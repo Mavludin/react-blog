@@ -4,80 +4,65 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHistory, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { postsUrl } from '../../../shared/projectData';
+import { useState } from 'react';
 import { EditPostForm } from './EditPostForm';
+import {
+  useDeletePost,
+  useEditPost,
+  useGetSinglePost,
+  useLikePost,
+} from '../../../shared/queries';
 
 export const BlogCardPage = ({ isAdmin }) => {
   const { postId } = useParams();
-  const [post, setPost] = useState({});
 
-  const [isPending, setIsPending] = useState(false);
   const [selectedPost, setSelectedPost] = useState({});
 
   const [showEditForm, setShowEditForm] = useState(false);
 
   const history = useHistory();
 
-  const fetchPost = (id) => {
-    axios
-      .get(postsUrl + id)
-      .then((response) => {
-        setPost(response.data);
-        setIsPending(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const {
+    data: post,
+    isLoading,
+    isError,
+    error,
+    isFetching,
+    refetch,
+  } = useGetSinglePost(postId);
+
+  const likeMutation = useLikePost();
+  const deleteMutation = useDeletePost();
+  const editMutation = useEditPost();
+
+  if (isLoading) return <h1>Загружаю данные...</h1>;
+
+  if (isError) return <h1>{error.message}</h1>;
+
+  const likePost = (blogPost) => {
+    console.log(blogPost);
+    const updatedPost = {...blogPost};
+    updatedPost.liked = !updatedPost.liked;
+    likeMutation
+      .mutateAsync(updatedPost)
+      .then(refetch)
+      .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    fetchPost(postId);
-  }, [postId]);
-
-  const likePost = () => {
-    const temp = { ...post };
-    temp.liked = !temp.liked;
-
-    axios
-      .put(`${postsUrl}${postId}`, temp)
-      .then((response) => {
-        console.log('Пост изменен => ', response.data);
-        fetchPost(postId);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const deletePost = () => {
-    if (window.confirm(`Удалить ${post.title}?`)) {
-      setIsPending(true);
-      axios
-        .delete(`${postsUrl}${postId}`)
-        .then((response) => {
-          console.log('Пост удален => ', response.data);
-          setIsPending(false);
-          history.push('/blog');
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+  const deletePost = (blogPost) => {
+    if (window.confirm(`Удалить ${blogPost.title}?`)) {
+      deleteMutation
+        .mutateAsync(blogPost)
+        .then(() => history.push('/blog'))
+        .catch((err) => console.log(err));
     }
   };
 
   const editBlogPost = (updatedBlogPost) => {
-    setIsPending(true);
-    axios
-      .put(`${postsUrl}${postId}`, updatedBlogPost)
-      .then((response) => {
-        console.log('Пост отредактирован =>', response.data);
-        fetchPost(postId);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    editMutation
+      .mutateAsync(updatedBlogPost)
+      .then(refetch)
+      .catch((err) => console.log(err));
   };
 
   const handleEditFormShow = (blogPost) => {
@@ -91,7 +76,7 @@ export const BlogCardPage = ({ isAdmin }) => {
 
   if (!post.title) return <h1>Загружаю данные...</h1>;
 
-  const postsOpactiy = isPending ? 0.5 : 1;
+  const postsOpactiy = isFetching ? 0.5 : 1;
   const heartFill = post.liked ? 'crimson' : 'black';
 
   return (
@@ -108,7 +93,7 @@ export const BlogCardPage = ({ isAdmin }) => {
           <h2>{post.title}</h2>
           <p>{post.description}</p>
           <div>
-            <button onClick={likePost}>
+            <button onClick={() => likePost(post)}>
               <FavoriteIcon style={{ fill: heartFill }} />
             </button>
           </div>
@@ -121,13 +106,13 @@ export const BlogCardPage = ({ isAdmin }) => {
             >
               <EditIcon />
             </button>
-            <button className='deleteBtn' onClick={deletePost}>
+            <button className='deleteBtn' onClick={() => deletePost(post)}>
               <DeleteForeverIcon />
             </button>
           </div>
         )}
       </div>
-      {isPending && <CircularProgress className='preloader' />}
+      {isFetching && <CircularProgress className='preloader' />}
     </>
   );
 };
