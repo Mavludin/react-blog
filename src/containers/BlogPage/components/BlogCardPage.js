@@ -3,7 +3,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { EditPostForm } from './EditPostForm';
 import {
@@ -20,15 +20,12 @@ export const BlogCardPage = ({ isAdmin }) => {
 
   const [showEditForm, setShowEditForm] = useState(false);
 
-  const history = useHistory();
-
   const {
     data: post,
     isLoading,
     isError,
     error,
-    isFetching,
-    refetch,
+    isFetching
   } = useGetSinglePost(postId);
 
   const likeMutation = useLikePost();
@@ -40,29 +37,19 @@ export const BlogCardPage = ({ isAdmin }) => {
   if (isError) return <h1>{error.message}</h1>;
 
   const likePost = (blogPost) => {
-    console.log(blogPost);
     const updatedPost = {...blogPost};
     updatedPost.liked = !updatedPost.liked;
-    likeMutation
-      .mutateAsync(updatedPost)
-      .then(refetch)
-      .catch((err) => console.log(err));
+    likeMutation.mutate(updatedPost)
   };
 
   const deletePost = (blogPost) => {
     if (window.confirm(`Удалить ${blogPost.title}?`)) {
-      deleteMutation
-        .mutateAsync(blogPost)
-        .then(() => history.push('/blog'))
-        .catch((err) => console.log(err));
+      deleteMutation.mutate(blogPost)
     }
   };
 
   const editBlogPost = (updatedBlogPost) => {
-    editMutation
-      .mutateAsync(updatedBlogPost)
-      .then(refetch)
-      .catch((err) => console.log(err));
+    editMutation.mutate(updatedBlogPost)
   };
 
   const handleEditFormShow = (blogPost) => {
