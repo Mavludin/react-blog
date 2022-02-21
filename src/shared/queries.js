@@ -16,6 +16,18 @@ export const useGetPosts = () => {
   })
 }
 
+export const useGetSinglePost = (postId) => {
+  return useQuery(['post', postId], () => {
+    return axios.get(postsUrl + postId)
+      .then(res => res.data)
+      .catch(err => {
+        throw new Error(err)
+      })
+  }, {
+    refetchOnWindowFocus: false,
+  })
+}
+
 export const useLikePost = () => {
   const queryClient = useQueryClient();
 
@@ -27,9 +39,9 @@ export const useLikePost = () => {
           throw new Error(err)
         })
     }, {
-      onSuccess: (data) => {
-        console.log('success', data);
+      onSuccess: (updatedPost) => {
         queryClient.invalidateQueries('posts');
+        queryClient.invalidateQueries(['post', updatedPost.id]);
       },
       onError: (error) => {
         console.log(error)
@@ -51,7 +63,6 @@ export const useDeletePost = () => {
         })
     }, {
       onSuccess: (data) => {
-        console.log('success', data);
         queryClient.invalidateQueries('posts');
         if (location !== '/blog') {
           history.push('/blog');
@@ -74,9 +85,9 @@ export const useEditPost = () => {
           throw new Error(err)
         })
     }, {
-      onSuccess: (data) => {
-        console.log('success', data);
+      onSuccess: (updatedPost) => {
         queryClient.invalidateQueries('posts');
+        queryClient.invalidateQueries(['post', updatedPost.id]);
       },
       onError: (error) => {
         console.log(error)
@@ -105,16 +116,4 @@ export const useAddPost = () => {
       },
     }
   )
-}
-
-export const useGetSinglePost = (postId) => {
-  return useQuery(['posts', postId], () => {
-    return axios.get(postsUrl + postId)
-      .then(res => res.data)
-      .catch(err => {
-        throw new Error(err)
-      })
-  }, {
-    refetchOnWindowFocus: false,
-  })
 }
