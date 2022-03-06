@@ -11,8 +11,6 @@ export const useGetPosts = () => {
       .catch(err => {
         throw new Error(err)
       })
-  }, {
-    refetchOnWindowFocus: false,
   })
 }
 
@@ -23,8 +21,6 @@ export const useGetSinglePost = (postId) => {
       .catch(err => {
         throw new Error(err)
       })
-  }, {
-    refetchOnWindowFocus: false,
   })
 }
 
