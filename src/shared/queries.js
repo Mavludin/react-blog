@@ -41,7 +41,7 @@ export const useLikePost = () => {
     }, {
       onSuccess: (updatedPost) => {
         queryClient.invalidateQueries('posts');
-        queryClient.invalidateQueries(['post', updatedPost.id]);
+        queryClient.setQueryData(['post', updatedPost.id], updatedPost)
       },
       onError: (error) => {
         console.log(error)
@@ -62,7 +62,7 @@ export const useDeletePost = () => {
           throw new Error(err)
         })
     }, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries('posts');
         if (location !== '/blog') {
           history.push('/blog');
@@ -87,7 +87,7 @@ export const useEditPost = () => {
     }, {
       onSuccess: (updatedPost) => {
         queryClient.invalidateQueries('posts');
-        queryClient.invalidateQueries(['post', updatedPost.id]);
+        queryClient.setQueryData(['post', updatedPost.id], updatedPost)
       },
       onError: (error) => {
         console.log(error)
