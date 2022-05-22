@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import './BlogPage.css';
-import { AddPostForm } from './components/AddPostForm';
-import { BlogCard } from './components/BlogCard';
+import './Blog.css';
+import { PostCard } from './PostCard/PostCard';
+import { AddPostForm } from './AddPostForm/AddPostForm';
+import { EditPostForm } from '../../components/EditPostForm/EditPostForm';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { EditPostForm } from './components/EditPostForm';
 import { Link } from 'react-router-dom';
 import { useAddPost, useDeletePost, useEditPost, useGetPosts, useLikePost } from '../../shared/queries';
 
-export const BlogPage = ({ isAdmin }) => {
+export const Blog = ({ isAdmin }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [selectedPost, setSelectedPost] = useState({});
@@ -67,7 +67,7 @@ export const BlogPage = ({ isAdmin }) => {
   const blogPosts = posts.map((item) => {
     return (
       <React.Fragment key={item.id}>
-        <BlogCard
+        <PostCard
           title={item.title}
           description={item.description}
           liked={item.liked}

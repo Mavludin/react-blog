@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useHistory } from "react-router";
-import "./LoginPage.css";
+import { useHistory } from "react-router-dom";
+import "./Login.css";
 
-export const LoginPage = ({
+export const Login = ({
   setIsLoggedIn,
   setUserName,
   setIsAdmin

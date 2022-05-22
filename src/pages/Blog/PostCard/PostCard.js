@@ -1,9 +1,9 @@
-import './BlogCard.css';
+import './PostCard.css';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 
-export const BlogCard = ({
+export const PostCard = ({
   title,
   description,
   liked,

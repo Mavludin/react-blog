@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, useHistory, useLocation } from 'react-router';
+import { Redirect, useHistory, useLocation } from 'react-router-dom';
 import { Result, Button } from 'antd';
 
 export const NoMatch = () => {
