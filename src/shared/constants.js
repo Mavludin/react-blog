@@ -1,6 +1,6 @@
-export const postsUrl = 'https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/'
+export const POSTS_URL = 'https://5fb3db44b6601200168f7fba.mockapi.io/api/posts/';
 
-export const posts = [
+export const POSTS = [
   {
     id: 1,
     title: "Post 1",
