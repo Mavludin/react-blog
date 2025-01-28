@@ -2,7 +2,14 @@ import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
-export const Header = ({ isLoggedIn, setIsLoggedIn, userName, setIsAdmin }) => {
+type HeaderProps = {
+  isLoggedIn: boolean
+  setIsLoggedIn: (value: boolean) => void
+  userName: string | null
+  setIsAdmin: (value: boolean) => void
+}
+
+export const Header = ({ isLoggedIn, setIsLoggedIn, userName, setIsAdmin }: HeaderProps) => {
   const handleLogOut = () => {
     localStorage.removeItem('isLoggedIn')
     localStorage.removeItem('userName')

@@ -6,11 +6,16 @@ import { EditPostForm } from '../../components/EditPostForm/EditPostForm';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'react-router-dom';
 import { useAddPost, useDeletePost, useEditPost, useGetPosts, useLikePost } from '../../shared/queries';
+import type { PostItem } from '../../types';
 
-export const Blog = ({ isAdmin }) => {
+type BlogProps = {
+  isAdmin: boolean
+}
+
+export const Blog = ({ isAdmin }: BlogProps) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [selectedPost, setSelectedPost] = useState({});
+  const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
 
   const { data: posts, isLoading, isError, error, isFetching } = useGetPosts();
 
@@ -23,23 +28,23 @@ export const Blog = ({ isAdmin }) => {
 
   if (isError) return <h1>{error.message}</h1>;
 
-  const likePost = (blogPost) => {
+  const likePost = (blogPost: PostItem) => {
     const updatedPost = {...blogPost};
     updatedPost.liked = !updatedPost.liked;
     likeMutation.mutate(updatedPost);
   };
 
-  const deletePost = (blogPost) => {
+  const deletePost = (blogPost: PostItem) => {
     if (window.confirm(`Удалить ${blogPost.title}?`)) {
       deleteMutation.mutate(blogPost)
     }
   };
 
-  const editBlogPost = (updatedBlogPost) => {
+  const editBlogPost = (updatedBlogPost: PostItem) => {
     editMutation.mutate(updatedBlogPost)
   };
 
-  const addNewBlogPost = (newBlogPost) => {
+  const addNewBlogPost = (newBlogPost: Omit<PostItem, 'id'>) => {
     addMutation.mutate(newBlogPost)
   };
 
@@ -60,11 +65,11 @@ export const Blog = ({ isAdmin }) => {
     setShowEditForm(false);
   };
 
-  const handleSelectPost = (blogPost) => {
+  const handleSelectPost = (blogPost: PostItem) => {
     setSelectedPost(blogPost);
   };
 
-  const blogPosts = posts.map((item) => {
+  const blogPosts = posts?.map((item: PostItem) => {
     return (
       <React.Fragment key={item.id}>
         <PostCard
@@ -93,7 +98,7 @@ export const Blog = ({ isAdmin }) => {
         />
       )}
 
-      {showEditForm && (
+      {showEditForm && selectedPost !== null && (
         <EditPostForm
           handleEditFormHide={handleEditFormHide}
           selectedPost={selectedPost}

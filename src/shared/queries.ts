@@ -4,8 +4,10 @@ import { POSTS_URL } from './constants';
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
+import type { PostItem } from '../types';
+
 export const useGetPosts = () => {
-  return useQuery('posts', () => {
+  return useQuery<PostItem[], Error>('posts', () => {
     return axios.get(POSTS_URL)
       .then(res => res.data)
       .catch(err => {
@@ -14,8 +16,8 @@ export const useGetPosts = () => {
   })
 }
 
-export const useGetSinglePost = (postId) => {
-  return useQuery(['post', postId], () => {
+export const useGetSinglePost = (postId: string) => {
+  return useQuery<PostItem, Error>(['post', postId], () => {
     return axios.get(POSTS_URL + postId)
       .then(res => res.data)
       .catch(err => {
@@ -28,7 +30,7 @@ export const useLikePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    (updatedPost) => {
+    (updatedPost: PostItem) => {
       return axios.put(`${POSTS_URL}${updatedPost.id}`, updatedPost)
         .then(res => res.data)
         .catch(err => {
@@ -51,7 +53,7 @@ export const useDeletePost = () => {
   const history = useHistory();
   const location = useLocation();
   return useMutation(
-    (blogPost) => {
+    (blogPost: PostItem) => {
       return axios.delete(`${POSTS_URL}${blogPost.id}`)
         .then(res => res.data)
         .catch(err => {
@@ -60,7 +62,7 @@ export const useDeletePost = () => {
     }, {
       onSuccess: () => {
         queryClient.invalidateQueries('posts');
-        if (location !== '/blog') {
+        if (location.pathname !== '/blog') {
           history.push('/blog');
         }
       },
@@ -74,7 +76,7 @@ export const useDeletePost = () => {
 export const useEditPost = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (updatedPost) => {
+    (updatedPost: PostItem) => {
       return axios.put(`${POSTS_URL}${updatedPost.id}`, updatedPost)
         .then(res => res.data)
         .catch(err => {
@@ -96,7 +98,7 @@ export const useAddPost = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    (newBlogPost) => {
+    (newBlogPost: Omit<PostItem, 'id'>) => {
       return axios.post(POSTS_URL, newBlogPost)
         .then(res => res.data)
         .catch(err => {

@@ -1,20 +1,27 @@
 import './AddPostForm.css';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export const AddPostForm = ({ addNewBlogPost, handleAddFormHide }) => {
+import type { PostItem } from '../../../types';
+
+type AddPostFormProps = {
+  addNewBlogPost: (value: Omit<PostItem, 'id'>) => void
+  handleAddFormHide: () => void
+}
+
+export const AddPostForm = ({ addNewBlogPost, handleAddFormHide }: AddPostFormProps) => {
   const [postTitle, setPostTitle] = useState('');
   const [postDesc, setPostDesc] = useState('');
 
-  const handlePostTitleChange = (e) => {
+  const handlePostTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostTitle(e.target.value);
   };
 
-  const handlePostDescChange = (e) => {
+  const handlePostDescChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostDesc(e.target.value);
   };
 
-  const createPost = (e) => {
+  const createPost = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const post = {
       title: postTitle,
@@ -26,8 +33,8 @@ export const AddPostForm = ({ addNewBlogPost, handleAddFormHide }) => {
     handleAddFormHide();
   };
 
-  useState(() => {
-    const handleEscape = (e) => {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         handleAddFormHide();
       }

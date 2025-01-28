@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import { PrivateRoute } from './components/PrivateRoute/PrivateRoute';
@@ -9,13 +7,21 @@ import { SingleBlogPost } from './pages/SingleBlogPost/SingleBlogPost';
 import { Login } from './pages/Login/Login';
 import { NoMatch } from './pages/NoMatch/NoMatch';
 
+type AppRoutesProps = {
+  isLoggedIn: boolean
+  setIsLoggedIn: (value: boolean) => void
+  setUserName: (value: string) => void
+  setIsAdmin: (value: boolean) => void
+  isAdmin: boolean
+}
+
 export const AppRoutes = ({
   isLoggedIn,
   setIsLoggedIn,
   setUserName,
   setIsAdmin,
   isAdmin,
-}) => {
+}: AppRoutesProps) => {
   return (
     <Switch>
       <Route
@@ -54,7 +60,9 @@ export const AppRoutes = ({
             <Redirect
               to={{
                 pathname: '/404',
-                from: location,
+                state: {
+                  from: location.pathname
+                }
               }}
             />
           );
