@@ -1,21 +1,28 @@
 import "./EditPostForm.css";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useEffect, useState } from "react";
+import type { PostItem } from "../../types";
 
-export const EditPostForm = (props) => {
+type EditPostFormProps = {
+  selectedPost: PostItem
+  handleEditFormHide: () => void
+  editBlogPost: (value: PostItem) => void
+}
+
+export const EditPostForm = (props: EditPostFormProps) => {
 
   const [postTitle, setPostTitle] = useState(props.selectedPost.title)
   const [postDesc, setPostDesc] = useState(props.selectedPost.description)
 
-  const handlePostTitleChange = (e) => {
+  const handlePostTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostTitle(e.target.value)
   };
 
-  const handlePostDescChange = (e) => {
+  const handlePostDescChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostDesc(e.target.value)
   };
 
-  const savePost = (e) => {
+  const savePost = (e: React.SyntheticEvent) => {
     e.preventDefault()
     const post = {
       id: props.selectedPost.id,
@@ -29,7 +36,7 @@ export const EditPostForm = (props) => {
   }
 
   useEffect(() => {
-    const handleEscape = (e) => {
+    const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         props.handleEditFormHide();
       }

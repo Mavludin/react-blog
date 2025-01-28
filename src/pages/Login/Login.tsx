@@ -2,26 +2,32 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./Login.css";
 
+type LoginProps = {
+  setIsLoggedIn: (value: boolean) => void
+  setUserName: (value: string) => void
+  setIsAdmin: (value: boolean) => void
+}
+
 export const Login = ({
   setIsLoggedIn,
   setUserName,
   setIsAdmin
-}) => {
+}: LoginProps) => {
 
   const history = useHistory()
 
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLoginChange = (e) => {
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLogin(e.target.value)
   }
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value)
   }
 
-  const handleLogIn = (e) => {
+  const handleLogIn = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     if (login === 'admin') {
@@ -32,7 +38,7 @@ export const Login = ({
       }
     }
 
-    localStorage.setItem('isLoggedIn', true);
+    localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userName', login);
 
     setUserName(login);

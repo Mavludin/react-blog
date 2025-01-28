@@ -13,10 +13,16 @@ import {
   useLikePost,
 } from '../../shared/queries';
 
-export const SingleBlogPost = ({ isAdmin }) => {
-  const { postId } = useParams();
+import type { PostItem } from '../../types';
 
-  const [selectedPost, setSelectedPost] = useState({});
+type SingleBlogPostProps = {
+  isAdmin: boolean
+}
+
+export const SingleBlogPost = ({ isAdmin }: SingleBlogPostProps) => {
+  const { postId } = useParams<{ postId: string }>();
+
+  const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
 
   const [showEditForm, setShowEditForm] = useState(false);
 
@@ -36,23 +42,23 @@ export const SingleBlogPost = ({ isAdmin }) => {
 
   if (isError) return <h1>{error.message}</h1>;
 
-  const likePost = (blogPost) => {
+  const likePost = (blogPost: PostItem) => {
     const updatedPost = {...blogPost};
     updatedPost.liked = !updatedPost.liked;
     likeMutation.mutate(updatedPost)
   };
 
-  const deletePost = (blogPost) => {
+  const deletePost = (blogPost: PostItem) => {
     if (window.confirm(`Удалить ${blogPost.title}?`)) {
       deleteMutation.mutate(blogPost)
     }
   };
 
-  const editBlogPost = (updatedBlogPost) => {
+  const editBlogPost = (updatedBlogPost: PostItem) => {
     editMutation.mutate(updatedBlogPost)
   };
 
-  const handleEditFormShow = (blogPost) => {
+  const handleEditFormShow = (blogPost: PostItem) => {
     setShowEditForm(true);
     setSelectedPost(blogPost);
   };
@@ -61,7 +67,7 @@ export const SingleBlogPost = ({ isAdmin }) => {
     setShowEditForm(false);
   };
 
-  if (!post.title) return <h1>Загружаю данные...</h1>;
+  if (post === undefined) return <h1>Загружаю данные...</h1>;
 
   const postsOpactiy = isFetching ? 0.5 : 1;
   const heartFill = post.liked ? 'crimson' : 'black';
@@ -69,7 +75,7 @@ export const SingleBlogPost = ({ isAdmin }) => {
   return (
     <>
       <div className='post' style={{ opacity: postsOpactiy }}>
-        {showEditForm && (
+        {showEditForm && selectedPost !== null && (
           <EditPostForm
             handleEditFormHide={handleEditFormHide}
             selectedPost={selectedPost}

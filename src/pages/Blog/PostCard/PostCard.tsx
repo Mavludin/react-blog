@@ -3,6 +3,17 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 
+type PostCardProps = {
+  title: string
+  description: string
+  liked: boolean
+  likePost: () => void
+  deletePost: () => void
+  handleEditFormShow: () => void
+  handleSelectPost: () => void
+  isAdmin: boolean
+}
+
 export const PostCard = ({
   title,
   description,
@@ -12,7 +23,7 @@ export const PostCard = ({
   handleEditFormShow,
   handleSelectPost,
   isAdmin,
-}) => {
+}: PostCardProps) => {
   const showEditForm = () => {
     handleSelectPost();
     handleEditFormShow();
